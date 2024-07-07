@@ -1,0 +1,391 @@
+{
+	"info": {
+		"_postman_id": "b19ce026-059f-41b4-9529-86f06516d65e",
+		"name": "onboardedPregnancyUserReaderTrue",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36025632"
+	},
+	"item": [
+		{
+			"name": "Select App goal",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//Creating dynamic global variables for access-token, client and uid\r",
+							"console.log(pm.request);\r",
+							"console.log(pm.response);\r",
+							"pm.environment.set(\"status_of_response\", pm.response.code);\r",
+							"pm.environment.set(\"access-token\", pm.response.headers.get(\"access-token\"));\r",
+							"pm.environment.set(\"client\", pm.response.headers.get(\"client\"));\r",
+							"pm.environment.set(\"uid\", pm.response.headers.get(\"uid\"));\r",
+							"pm.environment.set(\"user_id\", pm.response.json().id);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.environment.set(\"email_id\", pm.response.json().email);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"packages": {},
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "uid",
+						"value": "{{uid}}"
+					},
+					{
+						"key": "client",
+						"value": "{{client}}"
+					},
+					{
+						"key": "access-token",
+						"value": "{{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"onboarding_data\": [\r\n        {\r\n            \"question\": \"trying_to_get_pregnant\",\r\n            \"answer\": [\r\n                \"pregnant\"\r\n            ]\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/v1/onboarding_data/submit",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"onboarding_data",
+						"submit"
+					]
+				},
+				"description": "Verify that the user is able to create a new account using valid inputs"
+			},
+			"response": []
+		},
+		{
+			"name": "Basic Information",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log(pm.request);\r",
+							"console.log(pm.response);\r",
+							"pm.environment.set(\"status_of_response\", pm.response.code);\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var status_of_response = pm.environment.get(\"status_of_response\");",
+							"if (status_of_response < '200' || status_of_response>= '300') {",
+							"    pm.execution.skipRequest();",
+							"     throw new Error(\"Skipping request because status_of_response is not 200\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "uid",
+						"value": "{{uid}}"
+					},
+					{
+						"key": "client",
+						"value": "{{client}}"
+					},
+					{
+						"key": "access-token",
+						"value": "{{access-token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"age\": \"27\",\r\n    \"height\": \"160\",\r\n    \"weight_with_units\": \"123\",\r\n    \"trying_to_conceive_duration\": [\"Over 1 year\"],\r\n        \"diagnosed_with_conditions\": [\"No\"],\r\n        \"undergone_treatments\": [\"No\"],\r\n        \"other_products_used\": [\"No\"]\r\n        //\"notification_settings\": {\"have_sex_notification_enabled\": true}\r\n//        \"troubleshooting_active\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/v1/profile",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add or Replace Reader",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log(pm.request);\r",
+							"console.log(pm.response);\r",
+							"pm.environment.set(\"status_of_response\", pm.response.code);\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var status_of_response = pm.environment.get(\"status_of_response\");",
+							"if (status_of_response < '200' || status_of_response>= '300') {",
+							"    pm.execution.skipRequest();",
+							"     throw new Error(\"Skipping request because status_of_response is not 200\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "uid",
+						"value": "{{uid}}"
+					},
+					{
+						"key": "client",
+						"value": "{{client}}"
+					},
+					{
+						"key": "access-token",
+						"value": "{{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user\": {\r\n         \"reader_code\": \"{{reader_code}}\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/v1/users/{{user_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{{user_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "format pregnancy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log(pm.request);\r",
+							"console.log(pm.response);\r",
+							"pm.environment.set(\"pregnancy_positive_date\",pm.response.json().pregnancy_info.pregnancy_positive_date);\r",
+							"pm.environment.set(\"gestation_days\",pm.response.json().pregnancy_info.gestation_days);\r",
+							"pm.environment.set(\"end_date\",pm.response.json().pregnancy_info.end_date);\r",
+							"pm.environment.set(\"status_of_response\", pm.response.code);\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var status_of_response = pm.environment.get(\"status_of_response\");",
+							"if (status_of_response < '200' || status_of_response>= '300') {",
+							"    pm.execution.skipRequest();",
+							"     throw new Error(\"Skipping request because status_of_response is not 200\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "uid",
+						"value": "{{uid}}"
+					},
+					{
+						"key": "client",
+						"value": "{{client}}"
+					},
+					{
+						"key": "access-token",
+						"value": "{{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{url}}/api/v1/pregnancy/format?pregnancy_positive_date=2024-06-22&last_period_date=2024-06-11",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"pregnancy",
+						"format"
+					],
+					"query": [
+						{
+							"key": "pregnancy_positive_date",
+							"value": "2024-06-22"
+						},
+						{
+							"key": "last_period_date",
+							"value": "2024-06-11"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Onboard Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log(pm.request);\r",
+							"console.log(pm.response);\r",
+							"pm.environment.set(\"status_of_response\", pm.response.code);\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var status_of_response = pm.environment.get(\"status_of_response\");",
+							"if (status_of_response < '200' || status_of_response>= '300') {",
+							"    pm.execution.skipRequest();",
+							"     throw new Error(\"Skipping request because status_of_response is not 200\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "uid",
+						"value": "{{uid}}"
+					},
+					{
+						"key": "client",
+						"value": "{{client}}"
+					},
+					{
+						"key": "access-token",
+						"value": "{{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user\": {\r\n        \"period_dates\": {{period_dates}},\r\n\r\n        \"pregnancy_info\": {\r\n        \"pregnancy_positive_date\": \"{{pregnancy_positive_date}}\",\r\n        \"gestation_days\": {{gestation_days}},\r\n        \"end_date\": \"{{end_date}}\"\r\n      }\r\n    }\r\n\r\n    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/v1/users/{{user_id}}/onboard",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{{user_id}}",
+						"onboard"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

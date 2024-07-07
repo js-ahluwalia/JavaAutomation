@@ -1,0 +1,155 @@
+{
+	"info": {
+		"_postman_id": "a87a9208-e137-4cf3-9cc6-916e16ea79ea",
+		"name": "createUser",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36025632"
+	},
+	"item": [
+		{
+			"name": "Create User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log(\"Request is \",pm.request);",
+							"console.log(\"Response is \",pm.response);",
+							"pm.environment.set(\"status_of_response\", pm.response.code);",
+							"pm.environment.set(\"tv_access_token\", pm.response.json().user.access_token);",
+							"pm.environment.set(\"account_id\", pm.response.json().user.account_id);",
+							"pm.environment.set(\"truevault_access_token\", pm.response.json().user.access_token);",
+							"pm.environment.set(\"truevault_id\", pm.response.json().user.id);",
+							"pm.environment.set(\"id\", pm.response.json().user.id);",
+							"pm.environment.set(\"username\", pm.response.json().user.username);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "{{tv_access_key}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "{{username}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "text"
+						},
+						{
+							"key": "group_ids",
+							"value": "{{group_id}}",
+							"type": "text"
+						},
+						{
+							"key": "attributes",
+							"value": "{{base64encodedAttribute}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{tvURL}}/v1/users",
+					"host": [
+						"{{tvURL}}"
+					],
+					"path": [
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Inito Login Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log(pm.request);",
+							"console.log(pm.response);",
+							"pm.environment.set(\"status_of_response\", pm.response.code);",
+							"pm.environment.set(\"access_token\", pm.response.headers.get(\"access-token\"));",
+							"pm.environment.set(\"client\", pm.response.headers.get(\"client\"));",
+							"pm.environment.set(\"uid\", pm.response.headers.get(\"uid\"));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var status_of_response = pm.environment.get(\"status_of_response\");",
+							"if (status_of_response < '200' || status_of_response>= '300') {",
+							"    pm.execution.skipRequest();",
+							"     throw new Error(\"Skipping request because status_of_response is not 200\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "truevault_id",
+							"value": "{{id}}",
+							"type": "text"
+						},
+						{
+							"key": "truevault_access_token",
+							"value": "{{truevault_access_token}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/api/v2/auth/sign_in/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v2",
+						"auth",
+						"sign_in",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

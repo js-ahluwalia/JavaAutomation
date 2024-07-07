@@ -1,0 +1,133 @@
+{
+	"info": {
+		"_postman_id": "bc02df2b-a1ab-47a7-a899-b7ad206f47bd",
+		"name": "signIn",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36025632"
+	},
+	"item": [
+		{
+			"name": "TrueVault login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log(pm.request);",
+							"console.log(pm.response);",
+							"pm.environment.set(\"status_of_response\", pm.response.code);",
+							"pm.environment.set(\"id\", pm.response.json().user.id);",
+							"pm.environment.set(\"truevault_access_token\", pm.response.json().user.access_token);",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "text"
+						},
+						{
+							"key": "account_id",
+							"value": "{{account_id}}",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "{{username}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{tvURL}}/v1/auth/login",
+					"host": [
+						"{{tvURL}}"
+					],
+					"path": [
+						"v1",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Inito Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log(pm.request);",
+							"console.log(pm.response);",
+							"pm.environment.set(\"status_of_response\", pm.response.code);",
+							"pm.environment.set(\"access_token\", pm.response.headers.get(\"access-token\"));",
+							"pm.environment.set(\"client\", pm.response.headers.get(\"client\"));",
+							"pm.environment.set(\"uid\", pm.response.headers.get(\"uid\"));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var status_of_response = pm.environment.get(\"status_of_response\");",
+							"if (status_of_response < '200' || status_of_response>= '300') {",
+							"    pm.execution.skipRequest();",
+							"     throw new Error(\"Skipping request because status_of_response is not 200\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "truevault_id",
+							"value": "{{id}}",
+							"type": "text"
+						},
+						{
+							"key": "truevault_access_token",
+							"value": "{{truevault_access_token}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/api/v2/auth/sign_in/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v2",
+						"auth",
+						"sign_in",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

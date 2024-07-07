@@ -1,0 +1,237 @@
+{
+	"info": {
+		"_postman_id": "f2d9d4b8-ad02-498c-9caa-e8ca4fd32f17",
+		"name": "onboardedNonTTCHormoneOnlyUserReaderFalse",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36025632"
+	},
+	"item": [
+		{
+			"name": "Select App goal",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//Creating dynamic global variables for access-token, client and uid\r",
+							"console.log(pm.request);\r",
+							"console.log(pm.response);\r",
+							"pm.environment.set(\"status_of_response\", pm.response.code);\r",
+							"pm.environment.set(\"access-token\", pm.response.headers.get(\"access-token\"));\r",
+							"pm.environment.set(\"client\", pm.response.headers.get(\"client\"));\r",
+							"pm.environment.set(\"uid\", pm.response.headers.get(\"uid\"));\r",
+							"pm.environment.set(\"user_id\", pm.response.json().id);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.environment.set(\"email_id\", pm.response.json().email);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "uid",
+						"value": "{{uid}}"
+					},
+					{
+						"key": "client",
+						"value": "{{client}}"
+					},
+					{
+						"key": "access-token",
+						"value": "{{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"new_app_mode\": \"non_ttc_mode\",\r\n    \"onboarding_data\": [\r\n        {\r\n            \"question\": \"hormone_tracking_reasons\",\r\n            \"answer\": [\r\n                \"bb\"\r\n            ]\r\n        },\r\n        {\r\n            \"question\": \"trying_to_get_pregnant\",\r\n            \"answer\": [\r\n                \"no\"\r\n            ]\r\n        },\r\n          {\r\n            \"question\": \"want_to_track_fertility_level\",\r\n            \"answer\": [\r\n                \"no\"\r\n            ]\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/v1/onboarding_data/submit",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"onboarding_data",
+						"submit"
+					]
+				},
+				"description": "Verify that the user is able to create a new account using valid inputs"
+			},
+			"response": []
+		},
+		{
+			"name": "Basic Information",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log(pm.request);\r",
+							"console.log(pm.response);\r",
+							"pm.environment.set(\"status_of_response\", pm.response.code);\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var status_of_response = pm.environment.get(\"status_of_response\");",
+							"if (status_of_response < '200' || status_of_response>= '300') {",
+							"    pm.execution.skipRequest();",
+							"     throw new Error(\"Skipping request because status_of_response is not 200\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "uid",
+						"value": "{{uid}}"
+					},
+					{
+						"key": "client",
+						"value": "{{client}}"
+					},
+					{
+						"key": "access-token",
+						"value": "{{access-token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"age\": \"27\",\r\n    \"height\": \"160\",\r\n    \"weight_with_units\": \"123\",\r\n    \"trying_to_conceive_duration\": [\"Over 1 year\"],\r\n        \"diagnosed_with_conditions\": [\"No\"],\r\n        \"undergone_treatments\": [\"No\"],\r\n        \"other_products_used\": [\"No\"]\r\n        //\"notification_settings\": {\"have_sex_notification_enabled\": true}\r\n//        \"troubleshooting_active\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/v1/profile",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Onboard Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log(pm.request);\r",
+							"console.log(pm.response);\r",
+							"pm.environment.set(\"status_of_response\", pm.response.code);\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var status_of_response = pm.environment.get(\"status_of_response\");",
+							"if (status_of_response < '200' || status_of_response>= '300') {",
+							"    pm.execution.skipRequest();",
+							"     throw new Error(\"Skipping request because status_of_response is not 200\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "uid",
+						"value": "{{uid}}"
+					},
+					{
+						"key": "client",
+						"value": "{{client}}"
+					},
+					{
+						"key": "access-token",
+						"value": "{{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user\": {\r\n        \"period_dates\": {{period_dates}}\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/v1/users/{{user_id}}/onboard",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{{user_id}}",
+						"onboard"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

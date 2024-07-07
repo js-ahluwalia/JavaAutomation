@@ -1,0 +1,154 @@
+	{
+	"info": {
+		"_postman_id": "4a69cdee-6561-4327-a660-3713f573ea54",
+		"name": "onboardedFalseReaderFalse",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36025632"
+	},
+	"item": [
+		{
+			"name": "Truevault_Sign_Up",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log(\"Request is \",pm.request);",
+							"console.log(\"Response is \",pm.response);",
+							"pm.environment.set(\"status_of_response\", pm.response.code);",
+							"//Creating dynamic global variables for access-token, client and uid\r",
+							"\r",
+							"pm.environment.set(\"truevault_id\", pm.response.json().user.user_id);\r",
+							"pm.environment.set(\"truevault_access_token\", pm.response.json().user.access_token);\r",
+							"//For iteration use these variables\r",
+							"//pm.environment.set(\"email_itr\", pm.iterationData.get(\"email_itr\"))\r",
+							"//pm.environment.set(\"password_itr\", pm.iterationData.get(\"password_itr\"))\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic YWE3NjA1MzktN2Q5Mi00NzdiLWE0N2QtOWZiYTk1MTdkYmI3Og=="
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "ghfjf",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "text"
+						},
+						{
+							"key": "group_ids",
+							"value": "{{group_id}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://api.truevault.com/v1/users",
+					"protocol": "https",
+					"host": [
+						"api",
+						"truevault",
+						"com"
+					],
+					"path": [
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Backend Sign UP",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log(\"Request is \",pm.request);",
+							"console.log(\"Response is \",pm.response);",
+							"pm.environment.set(\"status_of_response\", pm.response.code);",
+							"//Creating dynamic global variables for access-token, client and uid\r",
+							"\r",
+							"pm.environment.set(\"access-token\", pm.response.headers.get(\"access-token\"));\r",
+							"pm.environment.set(\"client\", pm.response.headers.get(\"client\"));\r",
+							"pm.environment.set(\"uid\", pm.response.headers.get(\"uid\"));\r",
+							"pm.environment.set(\"user_id\", pm.response.json().id);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.environment.set(\"email_id\", pm.response.json().email);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var status_of_response = pm.environment.get(\"status_of_response\");",
+							"if (status_of_response < '200' || status_of_response>= '300') {",
+							"    pm.execution.skipRequest();",
+							"     throw new Error(\"Skipping request because status_of_response is not 200\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"truevault_id\": \"{{truevault_id}}\",\r\n    \"truevault_access_token\": \"{{truevault_access_token}}\",\r\n    \"country\": \"US\",\r\n    \"country_code\": \"US\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/v2/auth",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v2",
+						"auth"
+					]
+				},
+				"description": "Verify that the user is able to create a new account using valid inputs"
+			},
+			"response": []
+		}
+	]
+}
