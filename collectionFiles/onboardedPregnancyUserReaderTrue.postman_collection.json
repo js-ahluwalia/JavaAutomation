@@ -289,7 +289,7 @@
 					"formdata": []
 				},
 				"url": {
-					"raw": "{{url}}/api/v1/pregnancy/format?pregnancy_positive_date=2024-06-22&last_period_date=2024-06-11",
+					"raw": "{{url}}/api/v1/pregnancy/format?pregnancy_positive_date={{pregnancy_positive_date}}&last_period_date={{last_period_date}}",
 					"host": [
 						"{{url}}"
 					],
@@ -302,11 +302,11 @@
 					"query": [
 						{
 							"key": "pregnancy_positive_date",
-							"value": "2024-06-22"
+							"value": "{{pregnancy_positive_date}}"
 						},
 						{
 							"key": "last_period_date",
-							"value": "2024-06-11"
+							"value": "{{last_period_date}}"
 						}
 					]
 				}

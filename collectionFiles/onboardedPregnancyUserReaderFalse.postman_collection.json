@@ -31,6 +31,16 @@
 						"type": "text/javascript",
 						"packages": {}
 					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
 				}
 			],
 			"request": {
@@ -212,7 +222,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{url}}/api/v1/pregnancy/format?pregnancy_positive_date=2024-06-22&last_period_date=2024-06-11",
+					"raw": "{{url}}/api/v1/pregnancy/format?pregnancy_positive_date={{pregnancy_positive_date}}&last_period_date={{last_period_date}} ",
 					"host": [
 						"{{url}}"
 					],
@@ -225,11 +235,11 @@
 					"query": [
 						{
 							"key": "pregnancy_positive_date",
-							"value": "2024-06-22"
+							"value": "{{pregnancy_positive_date}}"
 						},
 						{
 							"key": "last_period_date",
-							"value": "2024-06-11"
+							"value": "{{last_period_date}} "
 						}
 					]
 				}
@@ -245,6 +255,7 @@
 						"exec": [
 							"console.log(pm.request);\r",
 							"console.log(pm.response);\r",
+							"console.log(\"Response is \",JSON.parse(pm.response.text()));\r",
 							"pm.environment.set(\"status_of_response\", pm.response.code);\r",
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
@@ -287,7 +298,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"user\": {\r\n        \"period_dates\": {{period_dates}},\r\n                    \r\n        \"pregnancy_info\": {\r\n        \"pregnancy_positive_date\": \"{{pregnancy_positive_date}}\",\r\n        \"gestation_days\": {{gestation_days}},\r\n        \"end_date\": \"{{end_date}}\"\r\n      }\r\n    }\r\n\r\n    \r\n}",
+					"raw": "{\r\n    \"user\": {\r\n        \"period_dates\": {{period_dates}},\r\n        \"pregnancy_info\": {\r\n            \"pregnancy_positive_date\": \"{{pregnancy_positive_date}}\",\r\n            \"gestation_days\": {{gestation_days}},\r\n            \"end_date\": \"{{end_date}}\"\r\n        }\r\n    }\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

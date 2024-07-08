@@ -4,8 +4,8 @@ import java.io.*;
 import org.json.simple.*;
 import org.json.simple.parser.*;
 
-public class collectionModifier {
-    private String path = "/Users/sde-intern/Desktop/Automation 2/collectionFiles/"; // Set your file path appropriately
+public class CollectionModifier {
+    private String path = System.getProperty("user.dir")+"/collectionFiles/"; // Set your file path appropriately
 
     public void replaceValue(String key, String newValue, String environment) {
         JSONParser parser = new JSONParser();
@@ -48,9 +48,5 @@ public class collectionModifier {
         }
     }
 
-    public static void main(String[] args) {
-        collectionModifier replacer = new collectionModifier();
-        replacer.replaceValue("test[images_attributes][][pic]", "/Users/sde-intern/Desktop/Automation 2/uploads/original_image_AEF.png", "createTest.postman_collection.json");
-    }
 }
 

@@ -2,19 +2,13 @@ package org.collectionFactory;
 
 import org.json.JSONObject;
 
-import javax.json.Json;
-import javax.json.JsonStructure;
-import javax.json.JsonWriter;
 import java.io.IOException;
-import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.util.Base64;
 import java.util.List;
 
 
-public class userFactory extends makeApiCall{
+public class UserFactory extends MakeApiCall {
 
 //    public static void signIn(JSONObject userData) throws IOException,InterruptedException{
 //        makeApiCall.signIn(userData);
@@ -93,8 +87,6 @@ public class userFactory extends makeApiCall{
 //        ***************************** calling methods *******************************************
 
         List<String> response = generateUserWithState("onboardedPregnancyUserReaderFalse");
-
-//        List<String> response = generateUserWithState("createTest");
         System.out.println(response);
 
     }

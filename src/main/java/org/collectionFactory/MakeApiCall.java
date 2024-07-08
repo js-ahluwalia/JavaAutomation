@@ -4,8 +4,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -13,67 +11,17 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
-public class makeApiCall {
+public class MakeApiCall extends HelperMethods{
    static String envFileName =  ConfigReader.getProperty("ENVFILENAME");
     static String envFilePath =  ConfigReader.getProperty("ENVDIRNAME")+"/"+envFileName; // Adjust the path as needed
 
     static HitAPI hitAPI = new HitAPI();
     static ReplaceValueForAKey replace = new ReplaceValueForAKey();
 
-    public static boolean checkStatus(String environment) throws InterruptedException {
-        readValueOfPostManEnvironment readEnvValue = new readValueOfPostManEnvironment();
-        int statusCode= Integer.parseInt(readEnvValue.readValueOfPostManEnvironmentKey("status_of_response",environment));
-        if(statusCode>=200 && statusCode<300){
-            return true;
-        }
-        else{
-            return false;
-        }
-
-    }
-    public static String toJsonString(String[] array) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("[");
-
-        for (int i = 0; i < array.length; i++) {
-            sb.append("\"").append(array[i]).append("\"");
-            if (i < array.length - 1) {
-                sb.append(", ");
-            }
-        }
-
-        sb.append("]\n");
-        return sb.toString();
-    }
-    public static String pwd() {
-
-        Path currentDirectoryPath = FileSystems.getDefault().getPath("");
-        String currentDirectoryName = currentDirectoryPath.toAbsolutePath().toString();
-        return currentDirectoryName;
-    }
-
-    public static String upload(String imageName) {
-        return pwd() + "/" + "uploads/" + imageName;
-    }
-
-    public static String[] generatePeriodDates() {
-        List<String> periodDates = new ArrayList<>();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate currentDate = LocalDate.now();
-        LocalDate previousMonthDate = currentDate.minusMonths(1);
-        for (int day = 1; day <= 4; day++) {
-            periodDates.add(previousMonthDate.withDayOfMonth(day).format(formatter));
-        }
-        for (int day = 1; day <= 4; day++) {
-            periodDates.add(currentDate.withDayOfMonth(day).format(formatter));
-        }
-        return periodDates.toArray(new String[0]);
-    }
-
     public static void createUser(JSONObject userData) throws IOException, InterruptedException {
         JSONObject attributes = new JSONObject();
-        attributes.put("name", "jaskeeratTest");
-        attributes.put("phone", "9878982233");
+        attributes.put("name", ConfigReader.getProperty("NAME"));
+        attributes.put("phone", ConfigReader.getProperty("PHONE"));
         attributes.put("email", userData.getString("username"));
         String json = attributes.toString();
         byte[] jsonBytes = json.getBytes(StandardCharsets.UTF_8);
@@ -111,7 +59,7 @@ public class makeApiCall {
 
     public static void createTest(JSONObject userData) throws InterruptedException{
 
-        collectionModifier collectionReplacer = new collectionModifier();
+        CollectionModifier collectionReplacer = new CollectionModifier();
         collectionReplacer.replaceValue("test[images_attributes][][pic]", userData.getString("test[images_attributes][][pic]"), "createTest.postman_collection.json");
         replace.replaceValue("test[done_date]", userData.getString("test[done_date]"),envFilePath);
         replace.replaceValue("period_dates", userData.getString("period_dates"),envFilePath);
@@ -131,21 +79,6 @@ public class makeApiCall {
         hitAPI.runApi("createUser", envFileName);
     }
 
-//    public static void onboardedTTCUserReaderTrue(JSONObject userData) throws IOException, InterruptedException {
-//
-//        replace.replaceValue("period_dates", userData.getString("period_dates"),envFilePath);
-//        replace.replaceValue("reader_code",userData.getString("reader_code"),envFilePath);
-//        replace.replaceValue("answer_want_to_track_fertility_level", userData.getString("answer_want_to_track_fertility_level"),envFilePath);
-//        String str = userData.getString("answer_trying_to_get_pregnant");
-//        if (str.equals("pregnant")){
-//            replace.replaceValue("pregnancy_positive_date",userData.getString("pregnancy_positive_date"),envFilePath);
-//            replace.replaceValue("gestation_days",userData.getString("gestation_days"),envFilePath);
-//            replace.replaceValue("end_date",userData.getString("end_date"),envFilePath);
-//            hitAPI.runApi("onboardedTTCUserReaderTrueUpdated", envFileName);
-//            return;
-//        }
-//        hitAPI.runApi("onboardedTTCUserReaderTrue", envFileName);
-//    }
     public static void onboardedNonTTCFertilityRatingUserReaderFalse() throws IOException, InterruptedException {
         hitAPI.runApi("onboardedNonTTCFertilityRatingUserReaderFalse", envFileName);
     }
@@ -158,10 +91,12 @@ public class makeApiCall {
     public static void onboardedNonTTCHormoneOnlyUserReaderTrue() throws IOException, InterruptedException {
         hitAPI.runApi("onboardedNonTTCHormoneOnlyUserReaderTrue", envFileName);
     }
-    public static void onboardedPregnancyUserReaderFalse() throws IOException, InterruptedException {
+    public static void onboardedPregnancyUserReaderFalse(JSONObject userData) throws IOException, InterruptedException {
+        replace.replaceValue("period_dates", userData.getString("period_dates"),envFilePath);
         hitAPI.runApi("onboardedPregnancyUserReaderFalse", envFileName);
     }
-    public static void onboardedPregnancyUserReaderTrue() throws IOException, InterruptedException {
+    public static void onboardedPregnancyUserReaderTrue(JSONObject userData) throws IOException, InterruptedException {
+        replace.replaceValue("period_dates", userData.getString("period_dates"),envFilePath);
         hitAPI.runApi("onboardedPregnancyUserReaderTrue", envFileName);
     }
     public static void onboardedTTCUserReaderFalse() throws IOException, InterruptedException {
@@ -176,7 +111,7 @@ public class makeApiCall {
 
         List<String> credentials = new ArrayList<String>();
         String username = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) + "@test.com";
-        String password = "12345678";
+        String password = ConfigReader.getProperty("PASSWORD");
         JSONObject userData = new JSONObject();
         userData.put("username", username);
         userData.put("password", password);
@@ -184,13 +119,7 @@ public class makeApiCall {
         createUser(userData);
         signIn(userData);
         String[] periodDates=generatePeriodDates();
-//        String[] periodDates = {
-//                "2024-05-01", "2024-05-02", "2024-05-03",
-//                "2024-05-04", "2024-06-01", "2024-06-02",
-//                "2024-06-03", "2024-06-04"
-//        };
         userData.put("period_dates",toJsonString(periodDates));
-//        userData.put("reader_code", "2C8f@E");
         userData.put("reader_code", ConfigReader.getProperty("READER_CODE"));
         credentials.add("username: " + username);
         credentials.add("password: " + password);
@@ -254,18 +183,6 @@ public class makeApiCall {
             case "onboardedFalseReaderFalse":
                     return credentials;
 
-//            case "onboardedTTCUserReaderTrue":
-//                    userData.put("answer_trying_to_get_pregnant", "yes" );
-//                    userData.put("answer_want_to_track_fertility_level", "no" );
-//                    onboardedTTCUserReaderTrue(userData);
-//                if(checkStatus(envFileName)) {
-//                    return credentials;
-//                }
-//                else{
-//                    credentials.clear();
-//                    credentials.add("Some API in the collection failed to return OK response");
-//                    return credentials;
-//                }
 
             case "onboardedNonTTCFertilityRatingUserReaderFalse":
                 onboardedNonTTCFertilityRatingUserReaderFalse();
@@ -313,7 +230,12 @@ public class makeApiCall {
                 }
 
             case  "onboardedPregnancyUserReaderFalse":
-                onboardedPregnancyUserReaderFalse();
+
+                periodDates=generatePregnancyPeriodDates();
+                userData.put("period_dates",toJsonString(periodDates));
+                onboardedPregnancyUserReaderFalse(userData);
+
+
                 if(checkStatus(envFileName)) {
                     return credentials;
                 }
@@ -324,7 +246,9 @@ public class makeApiCall {
                 }
 
             case  "onboardedPregnancyUserReaderTrue":
-                onboardedPregnancyUserReaderTrue();
+                periodDates=generatePregnancyPeriodDates();
+                userData.put("period_dates",toJsonString(periodDates));
+                onboardedPregnancyUserReaderTrue(userData);
                 if(checkStatus(envFileName)) {
                     return credentials;
                 }
@@ -355,8 +279,6 @@ public class makeApiCall {
                     credentials.add("Some API in the collection failed to return OK response");
                     return credentials;
                 }
-
-
         }
         credentials.clear();
         credentials.add("invalid method name ");

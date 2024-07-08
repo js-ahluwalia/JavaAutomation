@@ -5,7 +5,7 @@ import org.json.simple.parser.JSONParser;
 import java.io.*;
 import java.util.Iterator;
 
-public class readValueOfPostManEnvironment {
+public class ReadValueOfPostManEnvironment {
     String path="environmentFiles/";
     public String readValueOfPostManEnvironmentKey(String key,String environment) {
         JSONParser parser = new JSONParser();
